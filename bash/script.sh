@@ -1,8 +1,19 @@
 #!/bin/bash
 
-# Function to log messages
+# Log file path
+LOG_FILE="/var/log/cmd.log"
+
+# Function to log messages with time and date
 log_message() {
-    echo "[INFO] $1"
+    echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
+}
+
+# Function to log all executed commands with time and date
+log_commands() {
+    log_message "Logging of all commands has started."
+
+    # Redirect all output to the log file with a timestamp for each line
+    exec > >(while IFS= read -r line; do echo "$(date +'%Y-%m-%d %H:%M:%S') - $line"; done | tee -a "$LOG_FILE") 2>&1
 }
 
 # Function to check if a command exists
@@ -35,20 +46,19 @@ run_component_script() {
     fi
 }
 
-# Run the selected component's script
-run_component_script "$component"
+# Main script execution
+log_commands  # Start logging all commands with timestamps
+log_message "Starting the installation of required packages."
+install_packages
 
 # Install Navi
+log_message "Installing Navi."
 bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install)
 
 # Install Tailscale
 log_message "Installing Tailscale."
 curl -fsSL https://tailscale.com/install.sh | sh
 sudo tailscaled up
-
-# Main script execution
-log_message "Starting the installation of required packages."
-install_packages
 
 # Prompt user for component selection
 echo "Which component do you want to install?"
@@ -67,4 +77,12 @@ case $choice in
     *) log_message "Invalid choice. Exiting." ; exit 1 ;;
 esac
 
+run_component_script "$component"
 log_message "Installation complete."
+
+# Set up cron job to ensure logging persists through reboots
+log_message "Setting up cron job to persist logging through reboots."
+cron_job="@reboot root $(realpath "$0") >> $LOG_FILE 2>&1"
+(crontab -l 2>/dev/null; echo "$cron_job") | crontab -
+
+log_message "Cron job added for reboot persistence."
