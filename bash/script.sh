@@ -58,7 +58,7 @@ bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts
 # Install Tailscale
 log_message "Installing Tailscale."
 curl -fsSL https://tailscale.com/install.sh | sh
-sudo tailscaled up
+sudo tailscale up
 
 # Prompt user for component selection
 echo "Which component do you want to install?"
