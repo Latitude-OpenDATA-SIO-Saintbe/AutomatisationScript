@@ -1,0 +1,123 @@
+# Automatisation Script Project
+ 
+This repository contains a set of Bash and PowerShell scripts designed to automate the installation and configuration of various services, including Apache, Docker (with Portainer), Firewall, GLPI, and more.
+Project Structure
+
+## The project is organized into directories for different operating systems and services. Each service or tool has its own dedicated script for easy installation and configuration.
+
+```bash
+
+.
+├── bash
+│   ├── apache
+│   │   └── script.sh           # Script to install Apache
+│   ├── docker
+│   │   └── script.sh           # Script to install Docker and Portainer
+│   ├── firewall
+│   │   └── script.sh           # Script to configure Firewall
+│   ├── glpi
+│   │   └── script.sh           # Script to install GLPI
+│   └── script.sh               # Main installation script
+└── windows
+    └── script.ps1              # PowerShell script for Windows-based tasks
+```
+
+## Prerequisites
+
+Before running the scripts, ensure the following:
+
+    You have sudo privileges on your system.
+    You are running a supported operating system (Linux or Windows).
+    For Linux, these scripts assume a Debian-based distribution (like Ubuntu) and use apt for package management.
+
+## Installation Guide
+### Linux
+
+The main script allows you to choose which service you want to install, and it will run the appropriate installation script.
+
+    Clone the repository:
+
+```bash
+
+git clone https://github.com/Latitude-OpenDATA-SIO-Saintbe/AutomatisationScript.git
+cd AutomatisationScript
+```
+
+Make the scripts executable:
+
+```bash
+chmod +x bash/*/script.sh
+chmod +x bash/script.sh
+```
+
+Run the main installation script:
+
+```bash
+
+    bash bash/script.sh
+```
+
+    Follow the prompt: The script will ask you to choose the service you want to install:
+        Apache
+        Docker (with Portainer)
+        Firewall
+        GLPI
+
+    Type the number corresponding to your choice, and the script will automatically install and configure the selected service.
+
+Service-Specific Installation
+
+You can also run the individual scripts for each service directly, bypassing the prompt.
+Apache Installation
+
+To install Apache only:
+
+```bash
+
+bash bash/apache/script.sh
+```
+
+Docker Installation (with Portainer)
+
+To install Docker and launch Portainer:
+
+```bash
+
+bash bash/docker/script.sh
+```
+
+Firewall Configuration
+
+To configure the firewall:
+
+```bash
+
+bash bash/firewall/script.sh
+```
+
+GLPI Installation
+
+To install GLPI:
+
+```bash
+
+bash bash/glpi/script.sh
+```
+
+### Windows
+
+For Windows users, a PowerShell script is provided for automation tasks specific to Windows environments.
+
+    Run the PowerShell script:
+
+```powershell
+
+    ./windows/script.ps1
+```
+
+## Contributing
+
+Feel free to contribute to this project by submitting pull requests or reporting issues. Any improvements, bug fixes, or new automation scripts are welcome.
+License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
