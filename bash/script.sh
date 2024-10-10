@@ -27,7 +27,7 @@ install_packages() {
     if command_exists apt; then
         log_message "Using apt to install packages."
         sudo apt update
-        sudo apt install -y curl btop navi fastfetch ssh make
+        sudo apt-get install -y fzf btop navi fastfetch ssh make
     else
         log_message "No supported package manager found."
         exit 1
