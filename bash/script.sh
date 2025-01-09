@@ -32,8 +32,6 @@ fi
 
 # Main script execution
 log_commands  # Start logging all commands with timestamps
-log_message "Starting the installation of required packages."
-install_packages
 
 # Install components
 run_component_script "proxmox"
@@ -51,6 +49,9 @@ cron_job="@reboot root $(realpath "$0") >> /var/log/cmd.log 2>&1"
 (crontab -l 2>/dev/null; echo "$cron_job") | crontab -
 
 log_message "Cron job added for reboot persistence."
+
+log_message "Starting the installation of required packages."
+install_packages
 
 # inform user of completion and next steps
 log_message "Installation complete. Please go in all lxc and proxmox and run tailscaled up"
