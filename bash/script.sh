@@ -1,4 +1,5 @@
 #!/bin/bash
+<<<<<<< HEAD
 
 # Log file path
 LOG_FILE="/var/log/cmd.log"
@@ -33,28 +34,49 @@ install_packages() {
         exit 1
     fi
 }
+=======
+source ./common-install.sh
+>>>>>>> 836353b (feat: :sparkles: rework and install via community helper script)
 
 # Function to run the selected component's script
 run_component_script() {
     local component_dir="bash/$1/script.sh"
     if [ -f "$component_dir" ]; then
         log_message "Running the installation script for $1..."
-        bash "$component_dir"
+        case "$2" in
+            -u) bash "$component_dir" -u ;;
+            -p) bash "$component_dir" -p ;;
+            *) bash "$component_dir" ;;
+        esac
     else
         log_message "Script for $1 not found. Exiting."
         exit 1
     fi
 }
 
+# Check for -u option
+if [ "$1" == "-u" ]; then
+    run_component_script "proxmox" "-u"
+    run_component_script "docker" "-u"
+    run_component_script "glpi" "-u"
+    exit 0
+fi
+
+if [ "$1" == "-p" ]; then
+    run_component_script "proxmox" "-p"
+    exit 0
+fi
+
 # Main script execution
 log_commands  # Start logging all commands with timestamps
 log_message "Starting the installation of required packages."
 install_packages
 
-# Install Navi
-log_message "Installing Navi."
-bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install)
+# Install components
+run_component_script "proxmox"
+log_message "Installation complete."
 
+<<<<<<< HEAD
 # Install Tailscale
 log_message "Installing Tailscale."
 curl -fsSL https://tailscale.com/install.sh | sh
@@ -78,11 +100,17 @@ case $choice in
 esac
 
 run_component_script "$component"
+=======
+# Install lxc and vm
+log_message "Installing LXC and VM."
+run_component_script "docker"
+run_component_script "glpi"
+>>>>>>> 836353b (feat: :sparkles: rework and install via community helper script)
 log_message "Installation complete."
 
 # Set up cron job to ensure logging persists through reboots
 log_message "Setting up cron job to persist logging through reboots."
-cron_job="@reboot root $(realpath "$0") >> $LOG_FILE 2>&1"
+cron_job="@reboot root $(realpath "$0") >> /var/log/cmd.log 2>&1"
 (crontab -l 2>/dev/null; echo "$cron_job") | crontab -
 
 log_message "Cron job added for reboot persistence."
